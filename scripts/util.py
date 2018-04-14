@@ -1,10 +1,8 @@
 import numpy as np
 import os
 import hmm
-#import re
 import matplotlib.pyplot as plt
 import pickle
-#import shutil
 hmm
 
 class instance:
@@ -52,34 +50,14 @@ def get_features(word, prev, next):
     word = word.strip()
     a = []
     if len(word) > 0:
-        # for p in list_reg:
-        #    if re.compile(p).match(word): a.append("*REG" + p)
         if word[0].isupper():
             a.append("*U")
         if word[0].isdigit():
             a.append("*D")
 
-        #a.append("*PREV" + prev.lower())
-        #a.append("*NEXT" + next.lower())
-
-        # for p in list_prefix:
-        #     if word.startswith(p):
-        #         a.append(p)
-        #
-        # for p in list_suffix:
-        #     if word.endswith(p):
-        #         a.append(p)
         return a
 
     if len(word) > 0:
-        #if word[0].isupper():
-        #    a.append("*U")
-        #if word[0].islower():
-        #    a.append("*L")
-        #if word[0].isdigit():
-        #    a.append("*D")
-        #a.append(word[0])
-        #a.append(word[-1])
         if len(word) > 1:
             a.append(word[:2])
             a.append(word[-2:])
@@ -96,7 +74,6 @@ def process_word(word):
     :param word:
     :return:
     """
-    # return word.lower()
     return word
 
 
@@ -137,8 +114,6 @@ def build_index(input):
     # get unique labels and features
     list_labels = sorted(list(set(list_labels)))
     list_features = sorted(list(set(list_features)))
-    #list_labels = list(set(list_labels))
-    #list_features = list(set(list_features))
 
     # maps from word to labels/features
     labels = {}
@@ -601,9 +576,6 @@ def mv_cd(cd, labels, n_workers=100, smooth=0.001, print_star = False):
     :param cd: crowd_data
     :return:
     """
-    #X = 0
-    #Y = 0
-    #Z = 0
     sentences = []
     w_correct = smooth + np.zeros((n_workers, ))
     w_wrong = smooth + np.zeros((n_workers,))
@@ -656,9 +628,7 @@ def cal_workers_true_acc(cd, true_labs, ne=3, n_workers=47, print_out=False, ret
     :return: accuracy of each worker conditioned on the class
     """
 
-    # correct_0 = np.zeros((47,))     # correct when true class is 0
     correct_1 = np.zeros((10, 47))  # when true class is 1
-    #wrong_0 = np.zeros((47,))
     wrong_1 = np.zeros((10, 47))
 
     for sen, clab, true_lab in zip(cd.sentences, cd.crowdlabs, true_labs):
@@ -666,31 +636,15 @@ def cal_workers_true_acc(cd, true_labs, ne=3, n_workers=47, print_out=False, ret
         for c in clab:
             wid = c.wid
             for i, l in enumerate(c.sen):
-                # if true_lab[i] == ne:
-                #    if true_lab[i] == l:
-                #        correct_0[wid] += 1
-                #    else:
-                #        wrong_0[wid] += 1
-                # else:
+
                 if true_lab[i] == l:
                     correct_1[true_lab[i]][wid] += 1
                 else:
                     wrong_1[true_lab[i]][wid] += 1
 
-    # if print_out:
-        # for i in range(47):
-            # print i, 0, correct_0[i], wrong_0[i], correct_0[i] * 1.0 / (correct_0[i] + wrong_0[i])
-            # print i, 1, correct_1[i], wrong_1[i], correct_1[i] * 1.0 /
-            # (correct_1[i] + wrong_1[i])
-
     sen = np.zeros((10, 47))
-    #spe = np.zeros((47,))
-
     for w in range(47):
-        #spe[i] =  (correct_0[i] * 1.0 + smooth) / (correct_0[i] + wrong_0[i] + smooth*2)
-        #sen[:,i] = (correct_1[:,i] * 1.0 + smooth) / (correct_1[:,i] + wrong_1[:,i] + smooth*2)
-        # count number of correct ans given the class is positive (not
-        # non-entity)
+
         sum_pos_correct = 0
         sum_pos_wrong = 0
         for i in range(10):
@@ -806,9 +760,6 @@ def to_lample(cd, features, labels):
                 crowd_lab.append(inv_l[ins])
             res.append( map(list, zip(text_sen, crowd_lab) ) )
             wids.append(cl.wid)
-            #if len(res) > 100:
-            #    return (res, wids)
-            #if len(res) % 1000 == 0: print len(res)
 
     return (res, wids)
 
@@ -834,9 +785,6 @@ def to_lample_pico(cd, features, labels):
                 crowd_lab.append(unicode(ins))
             res.append( map(list, zip(text_sen, crowd_lab) ) )
             wids.append(cl.wid)
-            #if len(res) > 100:
-            #    return (res, wids)
-            #if len(res) % 1000 == 0: print len(res)
 
     return (res, wids)
 
